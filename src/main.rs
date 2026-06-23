@@ -7,22 +7,24 @@ enum TemperatureUnit {
     Kelvin,
 }
 
-fn convert_temp(temp: f64, from_unit: &TemperatureUnit, to_unit: &TemperatureUnit) -> f64 {
-    match (from_unit, to_unit) {
-        (TemperatureUnit::Celsius, TemperatureUnit::Fahrenheit) => temp * 9.0 / 5.0 + 32.0,
-        (TemperatureUnit::Fahrenheit, TemperatureUnit::Celsius) => (temp - 32.0) * 5.0 / 9.0,
-        (TemperatureUnit::Fahrenheit, TemperatureUnit::Kelvin) => {
-            ((temp - 32.0) * 5.0 / 9.0) + 273.15
-        }
-        (TemperatureUnit::Kelvin, TemperatureUnit::Fahrenheit) => {
-            (temp - 273.15) * 9.0 / 5.0 + 32.0
-        }
-        (TemperatureUnit::Celsius, TemperatureUnit::Kelvin) => temp + 273.15,
-        (TemperatureUnit::Kelvin, TemperatureUnit::Celsius) => temp - 273.15,
-        (TemperatureUnit::Celsius, TemperatureUnit::Celsius) => temp,
-        (TemperatureUnit::Fahrenheit, TemperatureUnit::Fahrenheit) => temp,
-        (TemperatureUnit::Kelvin, TemperatureUnit::Kelvin) => temp,
+fn to_celsius(temp: f64, from_unit: &TemperatureUnit) -> f64 {
+    match from_unit {
+        TemperatureUnit::Fahrenheit => (temp - 32.0) * 5.0 / 9.0,
+        TemperatureUnit::Kelvin => temp - 273.15,
+        _ => temp,
     }
+}
+
+fn from_celsius(temp: f64, to_unit: &TemperatureUnit) -> f64 {
+    match to_unit {
+        TemperatureUnit::Fahrenheit => temp * 9.0 / 5.0 + 32.0,
+        TemperatureUnit::Kelvin => temp + 273.15,
+        _ => temp,
+    }
+}
+
+fn convert_temp(temp: f64, from_unit: &TemperatureUnit, to_unit: &TemperatureUnit) -> f64 {
+    from_celsius(to_celsius(temp, from_unit), to_unit)
 }
 
 fn convert_to_unit(input_unit: char) -> Result<TemperatureUnit, String> {
