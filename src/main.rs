@@ -86,9 +86,9 @@ mod tests {
 
     #[test]
     fn check_round_trip() {
-        assert_eq!(
-            convert_temp(convert_temp(25.0, &Celsius, &Kelvin), &Kelvin, &Celsius),
-            25.0
+        assert!(
+            (convert_temp(convert_temp(25.0, &Celsius, &Kelvin), &Kelvin, &Celsius) - 25.0).abs()
+                < 1e-9
         )
     }
 
